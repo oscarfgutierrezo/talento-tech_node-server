@@ -20,8 +20,21 @@ app.get("/test", (req, res) => {
   res.send("Hello World");
 });
 
+// Recuperar todos los usuarios
 app.get("/user", (req, res) => {
   UserSchema.find({}).then((users) => res.json(users));
+});
+
+// Recuperar usuario por ID
+app.get("/user/:id", (req, res) => {
+  const id = req.params.id;
+  UserSchema.findById(id).then((user) => res.json(user));
+});
+
+// Recuperar usuario por email
+app.get("/email/:email", (req, res) => {
+  const email = req.params.email;
+  UserSchema.where({ email: email }).then((user) => res.json(user));
 });
 
 app.post("/user", (req, res) => {
