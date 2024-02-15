@@ -20,14 +20,16 @@ app.get("/test", (req, res) => {
   res.send("Hello World");
 });
 
-app.get("/name", (req, res) => {
-  res.send(req.query.name);
+app.get("/user", (req, res) => {
+  UserSchema.find({}).then((users) => res.json(users));
 });
 
 app.post("/user", (req, res) => {
   const user = new UserSchema({
     name: req.body.name,
     lastname: req.body.lastname,
+    email: req.body.email,
+    password: req.body.password,
   });
   user.save();
   res.json(user).status(201);
