@@ -29,7 +29,15 @@ router.post("/user", (req, res) => {
     email: req.body.email,
     password: req.body.password,
   });
-  user.save();
+  user
+    .save()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send("Error posting user");
+    });
   res.json(user).status(201);
 });
 
