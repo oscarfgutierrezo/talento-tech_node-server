@@ -33,4 +33,20 @@ router.post("/user", (req, res) => {
   res.json(user).status(201);
 });
 
+// Editar registro de usuario
+router.patch("/user/:id", (req, res) => {
+  const id = req.params.id;
+  const updateUser = {
+    name: req.body.name,
+    lastname: req.body.lastname,
+    email: req.body.email,
+  };
+  UserSchema.findByIdAndUpdate(id, updateUser)
+    .then(() => res.send(updateUser))
+    .catch((error) => {
+      console.log(error);
+      res.send(error);
+    });
+});
+
 module.exports = router;
