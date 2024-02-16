@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 const UserSchema = require("../models/User.js");
 
 const router = express();
@@ -21,13 +22,15 @@ router.get("/email/:email", (req, res) => {
 });
 
 // Almacenar un usuario nuevo
-router.post("/user", (req, res) => {
-  console.log(req.params);
+router.post("/user", async (req, res) => {
+  const { name, lastname, email, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   const user = new UserSchema({
-    name: req.body.name,
-    lastname: req.body.lastname,
-    email: req.body.email,
-    password: req.body.password,
+    name,
+    lastname,
+    email,
+    password: hashedPassword,
   });
   user
     .save()
