@@ -49,4 +49,16 @@ router.patch("/user/:id", (req, res) => {
     });
 });
 
+// Eliminar registro de usuario
+router.delete("/user/:id", (req, res) => {
+  const id = req.params.id;
+  UserSchema.deleteOne({ _id: id })
+    .then(() => {
+      res.json({ status: "success", message: "User deleted successfully" });
+    })
+    .catch((error) => {
+      res.json({ status: "error", message: "Error deleting user" });
+    });
+});
+
 module.exports = router;
