@@ -35,28 +35,37 @@ router.post("/user", async (req, res) => {
   user
     .save()
     .then((result) => {
-      res.send(result);
+      res.send({
+        status: "sucess",
+        message: "User posted successfully",
+        user: result,
+      });
     })
     .catch((err) => {
       console.log(err);
-      res.send("Error posting user");
+      res.send({ status: "error", message: "Error posting user" });
     });
-  res.json(user).status(201);
 });
 
 // Editar registro de usuario
 router.patch("/user/:id", (req, res) => {
   const id = req.params.id;
-  const updateUser = {
+  const updatedUser = {
     name: req.body.name,
     lastname: req.body.lastname,
     email: req.body.email,
   };
-  UserSchema.findByIdAndUpdate(id, updateUser)
-    .then(() => res.send(updateUser))
+  UserSchema.findByIdAndUpdate(id, updatedUser, { new: true })
+    .then((result) =>
+      res.send({
+        status: "sucess",
+        message: "User updated successfully",
+        updatedUser: result,
+      })
+    )
     .catch((error) => {
       console.log(error);
-      res.send(error);
+      res.send({ status: "error", message: "Error updating user" });
     });
 });
 
