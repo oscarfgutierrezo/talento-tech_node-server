@@ -7,7 +7,7 @@ const router = express();
 const userController = new UserController();
 
 // Recuperar todos los usuarios
-router.get("/user", (req, res) => {
+router.get("/user", userController.validateToken, (req, res) => {
   UserSchema.find({}).then((users) => res.json(users));
 });
 
