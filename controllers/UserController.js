@@ -1,6 +1,10 @@
 const bcrypt = require("bcrypt");
 const UserSchema = require("../models/User.js");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+// Variables de entorno
+const JWT_SECRET = process.env.JWT_SECRET || "";
 
 class UserController {
   constructor() {}
@@ -21,7 +25,7 @@ class UserController {
 
       const token = jwt.sign(
         { userId: user._id, email: user.email },
-        "secreto",
+        JWT_SECRET,
         { expiresIn: "1h" }
       );
 
@@ -41,7 +45,7 @@ class UserController {
     const token = bearerToken.startsWith("Bearer ")
       ? bearerToken.slice(7)
       : bearerToken;
-    jwt.verify(token, "secreto", (err, decoded) => {
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
         return res.status(401).json({ message: "Token inválido" });
       }

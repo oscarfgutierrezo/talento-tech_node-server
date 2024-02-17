@@ -2,11 +2,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/UserRoutes");
+require("dotenv").config();
+
+// Variables de entorno
+const DB_URL = process.env.DB_URL || "";
 
 // Conexion a base de datos Mongo
-mongoose.connect(
-  "mongodb+srv://oscarfgutierrezo:Fernando_71611556@cluster0.b92mxy5.mongodb.net/talentotech-users"
-);
+mongoose.connect(DB_URL);
 
 // Instancia Express
 const router = express.Router();
