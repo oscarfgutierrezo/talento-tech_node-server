@@ -1,8 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const UserSchema = require("../models/User.js");
+const UserController = require("../controllers/UserController.js");
 
 const router = express();
+const userController = new UserController();
 
 // Recuperar todos los usuarios
 router.get("/user", (req, res) => {
@@ -43,7 +45,7 @@ router.post("/user", async (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.send({ status: "error", message: "Error posting user" });
+      res.send({ status: "error", message: err });
     });
 });
 
@@ -79,6 +81,14 @@ router.delete("/user/:id", (req, res) => {
     .catch((error) => {
       res.json({ status: "error", message: "Error deleting user" });
     });
+});
+
+// Login
+router.post("/login", (req, res) => {
+  const { email, password } = req.body;
+  userController.login(email, password).then((result) => {
+    res.send(result);
+  });
 });
 
 module.exports = router;
