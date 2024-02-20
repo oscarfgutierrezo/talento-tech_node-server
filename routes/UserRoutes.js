@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const UserSchema = require("../models/User.js");
 const UserController = require("../controllers/UserController.js");
+const multer = require("multer");
 
 const router = express();
 const userController = new UserController();
@@ -88,6 +89,61 @@ router.post("/login", (req, res) => {
   const { email, password } = req.body;
   userController.login(email, password).then((result) => {
     res.send(result);
+  });
+});
+
+// Middleware configuración Multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  console.log(file.mimetype);
+
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("El archivo no es una imagen"));
+  }
+};
+
+const upload = multer({ storage: storage, fileFilter: fileFilter });
+
+// Servicio almacenamiento de archivos
+router.post("/upload/:id/user", upload.single("file"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send({
+      status: "error",
+      message: "No se proporcionó ningún archivo",
+    });
+  }
+
+  const id = req.params.id;
+
+  const updateUser = {
+    avatar: req.file.path,
+  };
+
+  UserSchema.findByIdAndUpdate(id, updateUser, { new: true })
+    .then((result) =>
+      res.send({
+        status: "sucess",
+        message: "File uploated successfully",
+      })
+    )
+    .catch((error) => {
+      console.log(error);
+      res.send({ status: "error", message: "Error updating user" });
+    });
+
+  res.send({
+    status: "success",
+    message: "Archivo subido correctamente",
   });
 });
 

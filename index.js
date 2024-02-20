@@ -26,6 +26,7 @@ app.get("/test", (req, res) => {
 // Inicio de servidor, escuchando en el puerto indicado
 const PORT = 3000;
 app.use(router);
+app.use("/uploads", express.static("uploads"));
 app.use("/", userRoutes); // Las rutas de userRoutes se manejan con base en la ruta '/'
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

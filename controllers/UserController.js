@@ -3,11 +3,10 @@ const UserSchema = require("../models/User.js");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-// Variables de entorno
-const JWT_SECRET = process.env.JWT_SECRET || "";
-
 class UserController {
-  constructor() {}
+  constructor() {
+    const JWT_SECRET = process.env.JWT_SECRET || "";
+  }
 
   async login(email, password) {
     try {
