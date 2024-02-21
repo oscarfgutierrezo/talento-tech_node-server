@@ -42,6 +42,10 @@ const HouseSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  price: {
+    type: Number,
+    required: true,
+  },
   code: {
     type: String,
     required: true,

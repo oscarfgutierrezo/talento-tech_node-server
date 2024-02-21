@@ -31,28 +31,17 @@ router.get("/house/:code", (req, res) => {
 
 // Almacenar una casa nueva
 router.post("/house", (req, res) => {
-  const {
-    address,
-    city,
-    state,
-    size,
-    zip_code,
-    rooms,
-    bathrooms,
-    parking,
-    code,
-  } = req.body;
-
   const house = new HouseSchema({
-    address,
-    city,
-    state,
-    size,
-    zip_code,
-    rooms,
-    bathrooms,
-    parking,
-    code,
+    address: req.body.address,
+    city: req.body.city,
+    state: req.body.state,
+    size: req.body.size,
+    zip_code: req.body.zip_code,
+    rooms: req.body.rooms,
+    bathrooms: req.body.bathrooms,
+    parking: req.body.parking,
+    price: req.body.price,
+    code: req.body.code,
   });
 
   house
@@ -67,6 +56,35 @@ router.post("/house", (req, res) => {
     .catch((err) => {
       console.log(err);
       res.send({ status: "error", message: err });
+    });
+});
+
+// Actualizar info house por ID
+router.patch("/house/:id", (req, res) => {
+  const id = req.params.id;
+  const updatedHouse = {
+    address: req.body.address,
+    city: req.body.city,
+    state: req.body.state,
+    size: req.body.size,
+    zip_code: req.body.zip_code,
+    rooms: req.body.rooms,
+    bathrooms: req.body.bathrooms,
+    parking: req.body.parking,
+    code: req.body.code,
+  };
+
+  HouseSchema.findByIdAndUpdate(id, updatedHouse, { new: true })
+    .then((result) =>
+      res.send({
+        status: "sucess",
+        message: "House updated successfully",
+        updatedHouse: result,
+      })
+    )
+    .catch((error) => {
+      console.log(error);
+      res.send({ status: "error", message: "Error updating house" });
     });
 });
 
