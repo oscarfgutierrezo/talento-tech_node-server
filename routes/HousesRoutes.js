@@ -88,4 +88,16 @@ router.patch("/house/:id", (req, res) => {
     });
 });
 
+// Eliminar registro de casas por ID
+router.delete("/house/:id", (req, res) => {
+  const id = req.params.id;
+  HouseSchema.deleteOne({ _id: id })
+    .then(() => {
+      res.json({ status: "success", message: "House deleted successfully" });
+    })
+    .catch((error) => {
+      res.json({ status: "error", message: "Error deleting house" });
+    });
+});
+
 module.exports = router;
