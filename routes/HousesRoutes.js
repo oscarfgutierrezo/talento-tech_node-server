@@ -55,7 +55,7 @@ router.post("/house", (req, res) => {
     })
     .catch((err) => {
       console.log(err);
-      res.send({ status: "error", message: err });
+      res.send({ status: "error", message: err.message });
     });
 });
 
