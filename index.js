@@ -1,35 +1,50 @@
-// Importaciones
+// Configuración Express
 const express = require("express");
-const mongoose = require("mongoose");
-const userRoutes = require("./routes/UserRoutes");
-const houseRoutes = require("./routes/HousesRoutes");
-require("dotenv").config();
-
-// Variables de entorno
-const DB_URL = process.env.DB_URL || "";
-
-// Conexion a base de datos Mongo
-mongoose.connect(DB_URL);
-
-// Instancia Express
 const router = express.Router();
 const app = express();
+
+// Variables de entorno
+require("dotenv").config();
 
 // Configuración servidor Socket
 const socket = require("socket.io");
 const http = require("http").Server(app);
 const io = socket(http);
 
+// Configuracion DB
+const DB_URL = process.env.DB_URL || "";
+const mongoose = require("mongoose");
+mongoose.connect(DB_URL);
+
+// Importaciones Routes
+const userRoutes = require("./routes/UserRoutes");
+const houseRoutes = require("./routes/HousesRoutes");
+const messageRoutes = require("./routes/MessageRoutes");
+
+const MessageSchema = require("./models/Message");
+
 // Verificar si un cliente se conecta al servidor de socket
 io.on("connect", (socket) => {
   console.log("connected");
 
+  // Escuchando eventos del servidor
   socket.on("message", (data) => {
-    console.log(data);
+    // Almacenar mensaje en DB
+    const payload = JSON.parse(data);
+    MessageSchema(payload)
+      .save()
+      .then((result) => {
+        socket.emit("message-receipt", {
+          message: "Mensaje recibido en el servidor",
+        });
+      })
+      .catch((error) => {
+        log({ status: "error", message: error.message });
+      });
+  });
 
-    socket.emit("message-receipt", {
-      message: "Mensaje recibido en el servidor",
-    });
+  socket.on("disconnect", (socket) => {
+    console.log("disconnect");
   });
 });
 
@@ -50,7 +65,8 @@ app.use((req, res, next) => {
 app.use(router);
 app.use("/uploads", express.static("uploads"));
 app.use("/", userRoutes); // Las rutas de userRoutes se manejan con base en la ruta '/'
-app.use("/", houseRoutes); // Las rutas de userRoutes se manejan con base en la ruta '/'
+app.use("/", houseRoutes); // Las rutas de houseRoutes se manejan con base en la ruta '/'
+app.use("/", messageRoutes); // Las rutas de messageRoutes se manejan con base en la ruta '/'
 
 // Inicio de servidor, escuchando en el puerto indicado
 const PORT = 3000;

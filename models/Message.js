@@ -8,12 +8,12 @@ const MessageSchema = new mongoose.Schema(
       required: true,
     },
     from: {
-      type: UserSchema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: true,
     },
     to: {
-      type: UserSchema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "user",
       required: true,
     },
