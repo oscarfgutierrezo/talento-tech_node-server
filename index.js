@@ -1,7 +1,7 @@
 // Configuración Express
 const express = require("express");
-const router = express.Router();
 const app = express();
+const router = express.Router();
 
 // Variables de entorno
 require("dotenv").config();
@@ -34,9 +34,7 @@ io.on("connect", (socket) => {
     MessageSchema(payload)
       .save()
       .then((result) => {
-        socket.emit("message-receipt", {
-          message: "Mensaje recibido en el servidor",
-        });
+        socket.broadcast.emit("message-receipt", payload);
       })
       .catch((error) => {
         log({ status: "error", message: error.message });

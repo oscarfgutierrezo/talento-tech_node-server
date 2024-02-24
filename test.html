@@ -9,34 +9,72 @@
   <div>
     <h1>Mensajes en tiempo real</h1>
     <div id="mensajes">
-
+      <!-- Renderización de mensajes -->
     </div>
     <div>
-      <textarea name="envio-mensajes" id="" cols="30" rows="10"></textarea>
-      <button type="button" id="send" onclick="addMessage()">Enviar</button>
+      <input name="envio-mensajes" id="envio-mensajes">
+      <button type="button" id="send">Enviar</button>
     </div>
   </div>
 </body>
+  <!-- Socket -->
   <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
+  <!-- JQuery -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <!-- Conectar con Socket -->
   <script>
     $(document).ready(function(){
+
+      /* Inicio escucha */
       const socket = io('http://localhost:3000', {
         transports: ['websocket']
       })
       socket.on('connect', function(socket){
         console.log('connected');
       })
-      socket.on("messages", function() {
+      socket.on("message-receipt", function(data) {
         addMessage(data)
       })
+      /* Fin escucha */
+
+
+      /* Inicio de envío de info del formulario */
+      $("#send").click(function() {
+        prepareMessage(socket)
+      })
+      $('#envio-mensajes').on("keypress", function() {
+        if(event.which === 13) {
+          prepareMessage(socket)
+        }
+      })
     })
-    function addMessage(data){
+
+    function prepareMessage(socket) {
+      content = $("#envio-mensajes").val()
+      console.log(content);
+
+      const payload = {
+        "body": content,
+        "from": '65cd66948de6d581381aa95e',
+        "to": '65cd69a9ba89ae4cf2e314f7'
+      }
+
+      const data = JSON.stringify(payload)
+
+      socket.emit("message", data)
+      addMessage(payload, true)
+    }
+
+    function addMessage(data, sender = false){
       const messageElement = document.createElement('li')
-      messageElement.textContent = "data.body"
+      messageElement.textContent = data.body
+      if(sender) {
+        messageElement.style.color = 'red'
+      }
+
       const messageDIV = document.getElementById('mensajes')
       messageDIV.appendChild(messageElement)
+      $("#envio-mensajes").val("")
     }
   </script>
 </html>
