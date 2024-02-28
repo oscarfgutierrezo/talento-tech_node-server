@@ -11,6 +11,10 @@ const socket = require("socket.io");
 const http = require("http").Server(app);
 const io = socket(http);
 
+// Importar y crear servidor GraphQL
+const { createYoga } = require("graphql-yoga");
+const schema = require("./graphql/schema");
+
 // Configuracion DB
 const DB_URL = process.env.DB_URL || "";
 const mongoose = require("mongoose");
@@ -60,6 +64,10 @@ app.use((req, res, next) => {
   res.io = io;
   next();
 });
+
+const yoga = new createYoga({ schema });
+app.use("/graphql", yoga);
+
 app.use(router);
 app.use("/uploads", express.static("uploads"));
 app.use("/", userRoutes); // Las rutas de userRoutes se manejan con base en la ruta '/'
