@@ -20,6 +20,15 @@ const User = new GraphQLObjectType({
   },
 });
 
+const UserFilterInput = new GraphQLInputObjectType({
+  name: "UserFilterInput",
+  fields: {
+    name: { type: GraphQLString },
+    lastname: { type: GraphQLString },
+    email: { type: GraphQLString },
+  },
+});
+
 const Message = new GraphQLObjectType({
   name: "Message",
   fields: {
@@ -31,12 +40,46 @@ const Message = new GraphQLObjectType({
   },
 });
 
-const UserFilterInput = new GraphQLInputObjectType({
-  name: "UserFilterInput",
+const MessageFilterInput = new GraphQLInputObjectType({
+  name: "MessageFilterInput",
   fields: {
-    name: { type: GraphQLString },
-    lastname: { type: GraphQLString },
-    email: { type: GraphQLString },
+    body: { type: GraphQLString },
+    from: { type: GraphQLString },
+    to: { type: GraphQLString },
+  },
+});
+
+const House = new GraphQLObjectType({
+  name: "House",
+  fields: {
+    _id: { type: GraphQLString },
+    address: { type: GraphQLString },
+    city: { type: GraphQLString },
+    state: { type: GraphQLString },
+    size: { type: GraphQLString },
+    zip_code: { type: GraphQLString },
+    rooms: { type: GraphQLString },
+    bathrooms: { type: GraphQLString },
+    parking: { type: GraphQLString },
+    price: { type: GraphQLString },
+    code: { type: GraphQLString },
+  },
+});
+
+const HousesFilterInput = new GraphQLInputObjectType({
+  name: "HouseFilterInput",
+  fields: {
+    _id: { type: GraphQLString },
+    address: { type: GraphQLString },
+    city: { type: GraphQLString },
+    state: { type: GraphQLString },
+    size: { type: GraphQLString },
+    zip_code: { type: GraphQLString },
+    rooms: { type: GraphQLString },
+    bathrooms: { type: GraphQLString },
+    parking: { type: GraphQLString },
+    price: { type: GraphQLString },
+    code: { type: GraphQLString },
   },
 });
 
@@ -73,6 +116,27 @@ const queries = {
   Messages: {
     type: GraphQLList(Message),
     resolve: resolvers.Messages,
+  },
+  MessagesByFilter: {
+    type: GraphQLList(Message),
+    resolve: resolvers.MessagesByFilter,
+    args: {
+      filter: { type: MessageFilterInput },
+    },
+  },
+  House: {
+    type: House,
+    resolve: resolvers.House,
+    args: {
+      id: { type: GraphQLString },
+    },
+  },
+  HousesByFilter: {
+    type: GraphQLList(House),
+    resolve: resolvers.HousesByFilter,
+    args: {
+      filter: { type: HousesFilterInput },
+    },
   },
 };
 
