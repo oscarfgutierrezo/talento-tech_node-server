@@ -24,6 +24,7 @@ mongoose.connect(DB_URL);
 const userRoutes = require("./routes/UserRoutes");
 const houseRoutes = require("./routes/HousesRoutes");
 const messageRoutes = require("./routes/MessageRoutes");
+const departmentsRoutes = require("./read_file");
 
 const MessageSchema = require("./models/Message");
 
@@ -73,6 +74,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/", userRoutes); // Las rutas de userRoutes se manejan con base en la ruta '/'
 app.use("/", houseRoutes); // Las rutas de houseRoutes se manejan con base en la ruta '/'
 app.use("/", messageRoutes); // Las rutas de messageRoutes se manejan con base en la ruta '/'
+app.use("/", departmentsRoutes); // Las rutas de departmentsRoutes se manejan con base en la ruta '/'
 
 // Inicio de servidor, escuchando en el puerto indicado
 const PORT = 3000;
