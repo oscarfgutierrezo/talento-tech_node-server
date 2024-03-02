@@ -5,7 +5,7 @@ require("dotenv").config();
 
 class UserController {
   constructor() {
-    const JWT_SECRET = process.env.JWT_SECRET || "";
+    this.JWT_SECRET = process.env.JWT_SECRET || "";
   }
 
   async login(email, password) {
@@ -24,7 +24,7 @@ class UserController {
 
       const token = jwt.sign(
         { userId: user._id, email: user.email },
-        JWT_SECRET,
+        this.JWT_SECRET,
         { expiresIn: "1h" }
       );
 

@@ -8,14 +8,19 @@ const router = express();
 const userController = new UserController();
 
 // Recuperar todos los usuarios
-router.get("/user", userController.validateToken, (req, res) => {
-  UserSchema.find({}).then((users) => res.json(users));
+/* router.get("/user", userController.validateToken, (req, res) => {
+  UserSchema.find({}).then((users) => res.json(users).status(200));
+}); */
+
+router.get("/user", (req, res) => {
+  UserSchema.find({}).then((users) => res.json(users).status(200));
 });
 
 // Recuperar usuario por ID
-router.get("/user/:id", (req, res) => {
+router.get("/user/:id", async (req, res) => {
   const id = req.params.id;
-  UserSchema.findById(id).then((user) => res.json(user));
+  const user = await UserSchema.findById(id);
+  res.json(user);
 });
 
 // Recuperar usuario por email
@@ -26,10 +31,11 @@ router.get("/email/:email", (req, res) => {
 
 // Almacenar un usuario nuevo
 router.post("/user", async (req, res) => {
-  const { name, lastname, email, password } = req.body;
+  const { name, lastname, email, password, id } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = new UserSchema({
+    id,
     name,
     lastname,
     email,
@@ -86,9 +92,15 @@ router.delete("/user/:id", (req, res) => {
 
 // Login
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  const email = req.body.email;
+  const password = req.body.password;
+
   userController.login(email, password).then((result) => {
-    res.send(result);
+    if (result.status == "error") {
+      res.status(401).send(result);
+    } else {
+      res.send(result);
+    }
   });
 });
 

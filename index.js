@@ -56,7 +56,7 @@ app.use(express.json());
 
 // Manejo de rutas
 app.get("/test", (req, res) => {
-  res.send("Hello World");
+  res.send("Hello World").status(200);
 });
 
 // Middlewares
@@ -79,3 +79,5 @@ const PORT = 3000;
 http.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+module.exports = http;
